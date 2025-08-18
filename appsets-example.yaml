@@ -1,59 +1,56 @@
-apiVersion: v1
-items:
-- apiVersion: argoproj.io/v1alpha1
-  kind: ApplicationSet
-  metadata:
-    annotations:
-      meta.helm.sh/release-name: argo-appsets
-      meta.helm.sh/release-namespace: argocd
-    creationTimestamp: "2025-08-14T10:55:51Z"
-    generation: 1
-    labels:
-      app.kubernetes.io/managed-by: Helm
-    name: it-delivers-everywhere-features
-    namespace: argocd
-    resourceVersion: "1414465"
-    uid: a913b319-7d0f-41f6-9fbc-e96c6e327a9e
-  spec:
-    generators:
-    - scmProvider:
-        cloneProtocol: https
-        filters:
-        - branchMatch: main
-          repoMatch: .*?-gitops$
-          pathsExist:
-          - environments/feature/*/values.yaml
-        github:
-          allBranches: false
-          organization: mdefenders
-          tokenRef:
-            key: token
-            secretName: mdefenders-github-token
-    goTemplate: true
-    goTemplateOptions:
-    - missingkey=error
-    template:
-      metadata:
-        name: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
-      spec:
-        destination:
-          namespace: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
-          server: https://kubernetes.default.svc
-        project: default
-        source:
-          helm:
-            valueFiles:
-            - environments/feature/{{ regexFind "environments/feature/([^/]+)/values.yaml" .path 1 }}/values.yaml
-            valuesObject:
-              feature: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
-          path: charts/app
-          repoURL: '{{ .url }}'
-          targetRevision: '{{ .branch }}'
-        syncPolicy:
-          automated:
-            prune: true
-            selfHeal: true
-          syncOptions:
-          - CreateNamespace=true
-          - PruneLast=true
-          - PrunePropagationPolicy=foreground
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  annotations:
+    meta.helm.sh/release-name: argo-appsets
+    meta.helm.sh/release-namespace: argocd
+  creationTimestamp: "2025-08-14T10:55:51Z"
+  generation: 1
+  labels:
+    app.kubernetes.io/managed-by: Helm
+  name: test-it-delivers-everywhere-features
+  namespace: argocd
+  resourceVersion: "1414465"
+  uid: a913b319-7d0f-41f6-9fbc-e96c6e327a9e
+spec:
+  generators:
+  - scmProvider:
+      cloneProtocol: https
+      filters:
+      - branchMatch: main
+        pathsExist:
+        - argoapps/feature/*/values.yaml
+      github:
+        allBranches: false
+        organization: mdefenders
+        tokenRef:
+          key: token
+          secretName: mdefenders-github-token
+  goTemplate: true
+  goTemplateOptions:
+  - missingkey=error
+  template:
+    metadata:
+      name: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+    spec:
+      destination:
+        namespace: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+        server: https://kubernetes.default.svc
+      project: default
+      source:
+        helm:
+          valueFiles:
+          - argoapps/feature/{{ regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1 }}/values.yaml
+          valuesObject:
+            feature: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+        path: charts/app
+        repoURL: '{{ .url }}'
+        targetRevision: '{{ .branch }}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+        - PruneLast=true
+        - PrunePropagationPolicy=foreground
