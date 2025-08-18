@@ -8,7 +8,7 @@ spec:
   - name: gke-gateways-gateway
     namespace: gateways
   hostnames:
-  - {{ .Values.app }}.{{ .Values.branch | default "default" }}.{{ .Values.domain | default "mdefenders.org" }}
+  - {{ .Values.app }}.{{ .Values.feature | default "default" }}.{{ .Values.domain | default "mdefenders.org" }}
   rules:
   - matches:
     - path:

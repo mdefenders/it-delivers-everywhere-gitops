@@ -8,7 +8,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: {{ .Values.app }}.{{ .Values.branch | default "default" }}.{{ .Values.domain | default "mdefenders.org" }}
+  - host: {{ .Values.app }}.{{ .Values.feature | default "default" }}.{{ .Values.domain | default "mdefenders.org" }}
     http:
       paths:
       - path: /

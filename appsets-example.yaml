@@ -45,7 +45,7 @@ items:
             valueFiles:
             - environments/feature/{{ regexFind "environments/feature/([^/]+)/values.yaml" .path 1 }}/values.yaml
             valuesObject:
-              feature: '{{ regexFind "environments/feature/([^/]+)/values.yaml" .path 1 }}'
+              feature: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
           path: charts/app
           repoURL: '{{ .url }}'
           targetRevision: '{{ .branch }}'
