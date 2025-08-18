@@ -1,0 +1,61 @@
+name: CD Update GitOps Manifest
+on:
+  workflow_dispatch:
+    inputs:
+      gitops-branch:
+        required: true
+        type: string
+        description: 'GitOps branch to update'
+      new-tag:
+        required: true
+        type: string
+        description: 'Tag to deploy'
+      gitops-file:
+        required: true
+        type: string
+        description: 'GitOps manifest to update'
+      environment:
+        required: true
+        type: string
+        description: 'Environment to deploy to'
+      image:
+        required: true
+        type: string
+        description: 'Image to deploy'
+      app:
+        required: true
+        type: string
+        description: 'Application name'
+      replicas:
+        required: false
+        type: string
+        default: '3'
+        description: 'Number of replicas to deploy'
+      rollback:
+        required: true
+        type: string
+        default: 'false'
+        description: 'Rollback to previous version'
+      dry-run:
+        required: true
+        type: string
+        default: 'false'
+        description: 'Dry run mode, do not commit changes'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  call-cd-update-gitops:
+    name: D Update GitOps Workflow
+    uses: mdefenders/shared-workflows/.github/workflows/cd-update-gitops.yaml@dev
+    with:
+      gitops-branch: ${{ inputs.gitops-branch }}
+      new-tag: ${{ inputs.new-tag }}
+      gitops-file: ${{ inputs.gitops-file }}
+      environment: ${{ inputs.environment }}
+      image: ${{ inputs.image }}
+      app: ${{ inputs.app }}
+      replicas: ${{ inputs.replicas }}
+      rollback: ${{ inputs.rollback }}
+      dry-run: ${{ inputs.dry-run }}
