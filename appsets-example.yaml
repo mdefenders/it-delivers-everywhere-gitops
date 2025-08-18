@@ -18,8 +18,9 @@ spec:
       cloneProtocol: https
       filters:
       - branchMatch: main
+        repositoryMatch: .*?-gitops$
         pathsExist:
-        - argoapps/feature/*/values.yaml
+        - argoapps/feature
       github:
         allBranches: false
         organization: mdefenders
@@ -31,18 +32,18 @@ spec:
   - missingkey=error
   template:
     metadata:
-      name: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+      name: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path)) "-" }}'
     spec:
       destination:
-        namespace: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+        namespace: 'test-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path)) "-" }}'
         server: https://kubernetes.default.svc
       project: default
       source:
         helm:
           valueFiles:
-          - argoapps/feature/{{ regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1 }}/values.yaml
+          - argoapps/feature/{{ regexFind "argoapps/feature/([^/]+)/values.yaml" .path }}/values.yaml
           valuesObject:
-            feature: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
+            feature: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "argoapps/feature/([^/]+)/values.yaml" .path)) "-" }}'
         path: charts/app
         repoURL: '{{ .url }}'
         targetRevision: '{{ .branch }}'
