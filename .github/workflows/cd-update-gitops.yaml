@@ -47,7 +47,7 @@ concurrency:
 
 jobs:
   call-cd-update-gitops:
-    name: D Update GitOps Workflow
+    name: Update GitOps Workflow
     uses: mdefenders/shared-workflows/.github/workflows/cd-update-gitops.yaml@dev
     with:
       gitops-branch: ${{ inputs.gitops-branch }}
