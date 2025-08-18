@@ -19,12 +19,12 @@ items:
     - scmProvider:
         cloneProtocol: https
         filters:
-        - branchMatch: ^feature/.*$
+        - branchMatch: main
+          repoMatch: .*?-gitops$
           pathsExist:
-          - deploy/charts/app
-          - deploy/environments/dev/values.yaml
+          - environments/feature/*/values.yaml
         github:
-          allBranches: true
+          allBranches: false
           organization: mdefenders
           tokenRef:
             key: token
@@ -34,21 +34,19 @@ items:
     - missingkey=error
     template:
       metadata:
-        name: '{{ .repository }}-{{ .branchNormalized }}'
+        name: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
       spec:
         destination:
-          namespace: '{{ .repository }}-{{ regexReplaceAll "[^a-z0-9-]" (lower .branchNormalized)
-            "-" }}'
+          namespace: '{{ regexReplaceAll "[^a-z0-9-]" (lower (regexReplaceAll "-gitops$" .repository "")) "-" }}-feature-{{ regexReplaceAll "[^a-z0-9-]" (lower (regexFind "environments/feature/([^/]+)/values.yaml" .path 1)) "-" }}'
           server: https://kubernetes.default.svc
         project: default
         source:
           helm:
             valueFiles:
-            - ../../environments/dev/values.yaml
+            - environments/feature/{{ regexFind "environments/feature/([^/]+)/values.yaml" .path 1 }}/values.yaml
             valuesObject:
-              branch: '{{ regexReplaceAll "[^a-z0-9-]" (lower .branchNormalized) "-"
-                }}'
-          path: deploy/charts/app
+              feature: '{{ regexFind "environments/feature/([^/]+)/values.yaml" .path 1 }}'
+          path: charts/app
           repoURL: '{{ .url }}'
           targetRevision: '{{ .branch }}'
         syncPolicy:
