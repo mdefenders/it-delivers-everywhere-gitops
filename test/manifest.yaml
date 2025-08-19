@@ -1,0 +1,5 @@
+services:
+  my-app-back:
+    replicas: 3
+    image: ghcr.io/mdefenders/app:0.0.1
+    tag: 0.0.1
