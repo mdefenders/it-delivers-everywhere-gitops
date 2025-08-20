@@ -1,5 +1,6 @@
 {{- if $.Values.ingressEnabled }}
 {{- range $name, $svc := .Values.services }}
+---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
