@@ -1,4 +1,0 @@
-image: mdefenders/it-delivers-everywhere
-tag: 1.2.18
-app: it-delivers-everywhere
-replicas: 3
