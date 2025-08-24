@@ -1,0 +1,5 @@
+services:
+  it-delivers-everywhere:
+    replicas: 3
+    image: mdefenders/it-delivers-everywhere
+    tag: 1.2.27
