@@ -2,4 +2,4 @@ services:
   it-delivers-everywhere:
     replicas: 3
     image: mdefenders/it-delivers-everywhere
-    tag: 1.2.27
+    tag: 1.2.28
