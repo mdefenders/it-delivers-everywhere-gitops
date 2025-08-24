@@ -1,8 +1,8 @@
 services:
   it-delivers-everywhere:
-    replicas: 1
+    replicas: 3
     image: mdefenders/it-delivers-everywhere
-    tag: feature-action-test-459e236
+    tag: feature-action-test-f60817b
   it-delivers-everywhere-2:
     replicas: 1
     image: mdefenders/it-delivers-everywhere
